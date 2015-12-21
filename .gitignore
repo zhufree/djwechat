@@ -55,3 +55,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+private_settings.py
+*.sqlite3
+.idea/

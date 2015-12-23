@@ -54,37 +54,32 @@ def get_openid(data):
 
 def set_menu(request):
     menu_data={
-        "button":[
-        {
-            "name":"产品简介",
-            "sub_button":[
-            {
-                "type":"view",
-                "name":"产品作用",
-                "url":"http://www.example.com/function/"
-            },
-            {
-                "type":"view",
-                "name":"产品图片",
-                "url":"http://www.example.com/picture/"
-            },
-            {
-                "type":"view",
-                "name":"价格展示",
-                "url":"http://www.example.com/show_price/"
-            }]
-        },
-        {
-            "type":"view",
-            "name":"案例",
-            "url":"http://www.example.com/example/"
-        },
-        {
-            "type":"view",
-            "name":"商城",
-            "url":"http://www.example.com"
-        }]
-        }
+       "button":[
+       {
+           "name":"产品简介",
+           "sub_button":[
+           {
+               "type":"view",
+               "name":"产品作用",
+               "url":"http://www.example.com/function/"
+           },
+           {
+               "type":"view",
+               "name":"产品图片",
+               "url":"http://www.example.com/picture/"
+           },
+           {
+               "type":"view",
+               "name":"价格展示",
+               "url":"http://www.example.com/show_price/"
+           }]
+       },
+       {
+		   "type":"view",
+           "name":"案例",
+			"url":"http://www.example.com/example/"
+       }]
+       }
     wechat.create_menu(menu_data)
     return HttpResponse(json.dumps(wechat.get_menu(), ensure_ascii=False),content_type='application/json')
 

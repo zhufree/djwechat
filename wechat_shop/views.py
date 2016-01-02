@@ -19,28 +19,42 @@ from private_settings import *
 wechat = WechatBasic(token=token, appid=appid, appsecret=appsecret)
 
 
-def get_all_user(request):
-        users_data = wechat.get_followers()
-        for open_id in users_data['data']['openid']:
-            print open_id
-            cur_user_info = wechat.get_user_info(open_id)
-            print cur_user_info
-            cur_username = cur_user_info['nickname']
-            cur_group_id = cur_user_info['groupid']
-            cur_simpleuser = SimpleUser(
-                name = cur_username,
-                open_id=open_id,
-                group=cur_group_id,
-                )
-            cur_simpleuser.save()
-        return HttpResponse(json.dumps(users_data, ensure_ascii=False), content_type='application/json')
+def add_new_user(open_id):
+    #print open_id
+    cur_user_info = wechat.get_user_info(open_id)
+    #print cur_user_info
+    cur_username = cur_user_info['nickname']
+    cur_group_id = cur_user_info['groupid']
+    cur_simpleuser = SimpleUser(
+        name = cur_username,
+        open_id=open_id,
+        group=cur_group_id,
+        )
+    cur_simpleuser.save()
+
+
+def refresh_all_users(request):
+    users_data = wechat.get_followers()
+    open_ids = users_data['data']['openid']
+    users_in_bd = SimpleUser.objects.all()
+    open_id_in_db: = [user.open_id for user in users_in_bd]
+    # delete unsubscribe users
+    for open_id in open_id_in_db:
+        if user.open_id in open_ids:
+            pass
+        else:
+            user_to_delete = SimpleUser.objects.get(open_id=open_id)
+            user_to_delete.delete()
+    # add new users
+    for open_id in open_ids:
+        if open_id not in  open_id_in_db:
+            add_new_user(open_id)
+        else:
+            pass
+    return HttpResponse(json.dumps(users_data, ensure_ascii=False), content_type='application/json')
 
 
 def get_all_goods(request):
-    pass
-
-
-def add_new_user(request):
     pass
 
 
@@ -54,7 +68,8 @@ def show_goods():
 # 获取用户的openid，进一步获取其他信息
 
 
-def get_openid(data):
+def get_openid_from_msg(data):
+    # get openid from message
     if type(data) == unicode:
         data = data.encode('utf-8')
     elif type(data) == str:
@@ -118,7 +133,7 @@ def index(request):
     if request.method == 'POST':
         body_text = request.body
         wechat.parse_data(body_text)
-        openid = get_openid(body_text)
+        openid_from_msg = get_openid_from_msg(body_text)
         message = wechat.get_message()
         response = None
         if message.type == 'text':
@@ -165,6 +180,10 @@ Tel:13908689118 张先生
 如需进行商业合作，请回复关键词“商业合作”，即可获取相关信息。
                 '''
             response = wechat.response_text(resp_text)
+            add_new_user(openid_from_msg)
+        elif message.type == 'unsubscribe':
+            user_to_delete = SimpleUser.objects.get(open_id=openid_from_msg)
+            user_to_delete.delete()
         else:
             response = wechat.response_text(u'未知')
         return HttpResponse(response, content_type="application/xml")

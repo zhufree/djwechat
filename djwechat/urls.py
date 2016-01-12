@@ -5,7 +5,7 @@ urlpatterns = patterns('',
     # Examples:
     url(r'^$', index, name='home'),
     url(r'^set_menu/$', set_menu),
-    url(r'^refresh_all_user/$', refresh_all_user),
+    url(r'^refresh_all_users/$', refresh_all_users),
 
     url(r'^admin/', include(admin.site.urls)),
 )

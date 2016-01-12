@@ -36,8 +36,8 @@ def add_new_user(open_id):
 def refresh_all_users(request):
     users_data = wechat.get_followers()
     open_ids = users_data['data']['openid']
-    users_in_bd = SimpleUser.objects.all()
-    open_id_in_db: = [user.open_id for user in users_in_bd]
+    users_in_db = SimpleUser.objects.all()
+    open_id_in_db: = [user.open_id for user in users_in_db]
     # delete unsubscribe users
     for open_id in open_id_in_db:
         if user.open_id in open_ids:
@@ -86,27 +86,37 @@ def set_menu(request):
     menu_data = {
         "button": [
             {
-                "name": "产品简介",
+                "name": "产品介绍",
                 "sub_button": [
                     {
                         "type": "view",
-                        "name": "产品作用",
+                        "name": "产品背景",
                         "url": "http://www.example.com/function/"
                     },
                     {
                         "type": "view",
-                        "name": "产品图片",
+                        "name": "质量检验",
                         "url": "http://www.example.com/picture/"
                     },
                     {
                         "type": "view",
-                        "name": "价格展示",
+                        "name": "产品简介",
+                        "url": "http://mp.weixin.qq.com/s?__biz=MzA5MTc2OTA1NA==&mid=401036707&idx=1&sn=25cdce0aee826bf311a74f23f65449ef&scene=0#wechat_redirect"
+                    },
+                    {
+                        "type": "view",
+                        "name": "使用案例",
+                        "url": "http://www.example.com/show_price/"
+                    },
+                    {
+                        "type": "view",
+                        "name": "产品功效",
                         "url": "http://www.example.com/show_price/"
                     }]
             },
             {
                 "type": "view",
-                "name": "案例",
+                "name": "合作加盟",
                 "url": "http://www.example.com/example/"
             },
             {
